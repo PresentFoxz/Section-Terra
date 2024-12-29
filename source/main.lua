@@ -24,18 +24,19 @@ local mineImage = gfx.image.new("images/mine")
 local style = 0
 
 local lastX, lastY = playerPos.x, playerPos.y
-local blockType = {"Hand", "Block"}
+local blockType = {"Hand", "Block", "Pickaxe", "Axe"}
 local blockEquip = 1
 
 local function createBlockSprite(x, y)
     rand = math.random(0,1)
+    resistRand = -0.2 + (0.2 - -0.2) * math.random()
 
     if rand == 1 then
         local blockSprite = gfx.sprite.new(blockImage)
         blockSprite:setCollideRect(0, 0, blockSprite:getSize())
         blockSprite:moveTo(x - camPos.x, y - camPos.y)
         blockSprite:add()
-        table.insert(blockSprites, {sprite = blockSprite, x = x, y = y})
+        table.insert(blockSprites, {sprite = blockSprite, x = x, y = y, dex = 20, resist = resistRand, block = rand})
     end
 end
 
@@ -116,6 +117,7 @@ function playdate.update()
     --print("PlayerPos: ", playerSprite.position)
     --print("PlayerSpeed: ", playerSpeed.x, playerSpeed.y)
     updateCamera()
+    updateBlockData(blockSprites)
     playdate.timer.updateTimers()
     gfx.sprite.update()
 
