@@ -44,7 +44,7 @@ local function fixUp(mineSprite, blockSprites, camPos, blockImage, amt, gfx)
                 addBlock(drawX, drawY, blockSprites, camPos, blockImage, gfx)
                 return
             end
-
+            
             drawX += 40
         end
         drawX = 14
