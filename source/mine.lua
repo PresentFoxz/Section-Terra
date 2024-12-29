@@ -18,11 +18,12 @@ local function addBlock(x, y, blockSprites, camPos, blockImage, gfx)
         return
     end
     
+    resistRand = -0.2 + (0.2 - -0.2) * math.random()
     local blockSprite = gfx.sprite.new(blockImage)
     blockSprite:setCollideRect(0, 0, blockSprite:getSize())
     blockSprite:moveTo(x - camPos.x, y - camPos.y)
     blockSprite:add()
-    table.insert(blockSprites, {sprite = blockSprite, x = x, y = y})
+    table.insert(blockSprites, {sprite = blockSprite, x = x, y = y, dex = 20, resist = resistRand, block = rand})
     print("Added block at:", x, y)
 end
 
