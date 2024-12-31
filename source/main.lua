@@ -34,13 +34,12 @@ local function makeWorld()
 end
 
 local function initialize()
-
     makeWorld()
 end
 
 local function updateCamera()
     camPos.x = math.max(0, math.min(worldWidth - screenWidth, playerPos.x - screenWidth / 2))
-    camPos.y = math.max(-100, math.min(worldHeight - screenHeight, playerPos.y - screenHeight / 2))
+    camPos.y = math.max(0, math.min(worldHeight - screenHeight, playerPos.y - screenHeight / 2))
 end
 
 local previousButtonStates = {}

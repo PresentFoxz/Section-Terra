@@ -11,6 +11,7 @@ function drawWorld()
             if (xPos < 400 and xPos > -40) and (yPos > -40 and yPos < 240) then
                 sprite:draw(xPos, yPos)
             end
+            
         end
     end
 end

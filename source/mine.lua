@@ -57,10 +57,9 @@ function mine(item)
         }
 
         if playdate.buttonIsPressed(playdate.kButtonA) then
+            print("Closest Block:", closest and closest.block)
+            print(validBlocks[item])
             if not closest == false then
-                print("Closest Block:", closest and closest.block)
-                print(validBlocks[item])
-                print(buttonJustPressed(playdate.kButtonA))
                 if closest.block > 0 and validItems[item] then
                     if closest.dex > 0 then
                         closest.dex -= objects[item].dex

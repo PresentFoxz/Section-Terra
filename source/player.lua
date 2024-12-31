@@ -3,29 +3,34 @@ import "library.lua"
 local airtime = 0
 
 function handleCollisions()
-    -- colliding with the floor
-    slot = collisionCheck()
-    print(slot)
-    if slot == 1 then
-        if playerPos.y ~= lastY then
-            playerSpeed.y = -1
-            playerPos.y -= 1
-            playerPos.y = lastY
-            vars.ground = 1
-            airtime = 0
-        else
-            vars.ground = 0
-        end
-    end
-    -- colliding with the sides
-    if slot == 3 then
+    -- Wall Collision
+    playerPos.y -= 2
+    slot = collisionCheck(3)
+    if slot then
         if playerPos.x ~= lastX then
             playerSpeed.x = -playerSpeed.x / 2
             playerPos.x = lastX
         end
     end
-    -- colliding with roof
-    if slot == 2 then
+    playerPos.y += 2
+
+    -- Feet Collision
+    slot = collisionCheck(1)
+    if slot then
+        if playerPos.y ~= lastY then
+            playerSpeed.y = -0.1
+            playerPos.y -= 1
+            playerPos.y = lastY
+            vars.ground = 1
+            airtime = 0
+        end
+    else
+        vars.ground = 0
+    end
+
+    -- Head Collision
+    slot = collisionCheck(2)
+    if slot then
         if playerPos.y ~= lastY then
             playerSpeed.y = 1
             playerPos.y += 1
@@ -36,6 +41,7 @@ function handleCollisions()
 end
 
 function movement()
+    vars.ground = 0
     lastX, lastY = playerPos.x, playerPos.y
     if style == 0 then
         if playdate.buttonIsPressed(playdate.kButtonRight) then
@@ -63,9 +69,10 @@ function movement()
     if vars.ground == 0 then
         playerSpeed.y += vars.fall
     end
+    print(playerSpeed.y)
 end
 
-function clampSpeed(maxSpeed)   
+function clampSpeed(maxSpeed)
     if playerSpeed.y > vars.fallMax then
         playerSpeed.y = vars.fallMax
     end
