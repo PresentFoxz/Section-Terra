@@ -57,7 +57,6 @@ function mine(item)
         }
 
         if playdate.buttonIsPressed(playdate.kButtonA) then
-            print("Closest Block:", closest and closest.block)
             print(validBlocks[item])
             if not closest == false then
                 if closest.block > 0 and validItems[item] then

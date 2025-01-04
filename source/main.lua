@@ -58,7 +58,6 @@ function playdate.update()
     if buttonJustPressed(playdate.kButtonB) then
         style = (style + 1) % 2
     end
-    --print("Style: ", style)
 
     if style == 0 then
         if buttonJustPressed(playdate.kButtonDown) then

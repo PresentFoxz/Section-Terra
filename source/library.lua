@@ -1,8 +1,8 @@
 blockSpacing = 40
 tiles = {}
-amt = {x = 20, y = 20}
+amt = {x = 40, y = 50}
 screenWidth, screenHeight = 400, 240
-worldWidth, worldHeight = 800, 800
+worldWidth, worldHeight = 1600, 2000
 
 playerPos = {x = 200, y = 20, w = 32, h = 32}
 playerSpeed = {x = 0, y = 0}
@@ -49,17 +49,18 @@ function buttonJustPressed(button)
     return isPressed and not wasPressed
 end
 
-function collisionCheck(slot)
+function collisionCheck(s)
+    local collisions = {false, false, false}
     local tilesToCheck = {
-        -40, 40,
-        0, 40,
-        40, 40,
-        -40, 0,
+        -blockSpacing, blockSpacing,
+        0, blockSpacing,
+        blockSpacing, blockSpacing,
+        -blockSpacing, 0,
         0, 0,
-        40, 0,
-        -40, -40,
-        0, -40,
-        40, -40
+        blockSpacing, 0,
+        -blockSpacing, -blockSpacing,
+        0, -blockSpacing,
+        blockSpacing, -blockSpacing
     }
     for i = 1, #tilesToCheck, 2 do
         local tileX = playerPos.x + tilesToCheck[i] + (playerPos.w / 2)
@@ -82,39 +83,34 @@ function collisionCheck(slot)
                box_right < collider_left or
                box_left > collider_right then
             else
-                if slot == 1 then
+                if not s then
                     if (box_bottom >= collider_top and 
                         box_top < collider_top and
                         box_right > collider_left and
                         box_left < collider_right) then
-                        print("Collision detected: Feet")
-                        return "Feet"
+                        collisions[1] = true
                     end
-                elseif slot == 2 then
                     if (box_top <= collider_bottom and
                         box_bottom > collider_bottom and
                         box_right > collider_left and
                         box_left < collider_right) then
-                        print("Collision detected: Head")
-                        return "Head"
+                        collisions[2] = true
                     end
-                elseif slot == 3 or slot == 4 then
+                elseif s then
                     if box_right >= collider_left and
-                    box_left <= collider_right then
+                        box_left <= collider_right then
                         local midpoint = collider_left + (collider_right - collider_left) / 2
                         if box_right <= midpoint then
-                            print("Collision detected: Left Side")
-                            return "Left"
+                            collisions[3] = true
                         elseif box_left >= midpoint then
-                            print("Collision detected: Right Side")
-                            return "Right"
+                            collisions[3] = true
                         end
                     end
                 end
             end
         end
     end
-    return nil
+    return collisions
 end
 
 function tileCheck(x, y)
@@ -122,14 +118,10 @@ function tileCheck(x, y)
     local cellY = math.floor(y / blockSpacing)
     local index = (cellY * amt.x + cellX)
     
-    print("cellX:", cellX, "cellY:", cellY, "index:", index)
-    
     local tile = tiles[(index + 1)]
     if tile then
-        print("Tile found:", tile)
         return tile
     end
     
-    print("No tile at this position.")
     return false
 end

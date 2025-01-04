@@ -2,43 +2,33 @@ import "library.lua"
 
 local airtime = 0
 
-function handleCollisions()
-    -- Wall Collision
-    playerPos.y -= 2
-    slot = collisionCheck(3)
-    if slot then
-        if playerPos.x ~= lastX then
+function handleCollisions(slot)
+    local collisions = collisionCheck(slot)
+    
+    if not slot then
+        -- Handle Feet Collision
+        if collisions[1] then
+            playerSpeed.y = -0.1
+            playerPos.y = lastY
+            vars.ground = 1
+            airtime = 0
+        else
+            vars.ground = 0
+        end
+        -- Handle Head Collision
+        if collisions[2] then
+            playerSpeed.y = 1
+            playerPos.y = lastY
+        end
+    elseif slot then
+        -- Handle Wall Collision
+        if collisions[3] then
             playerSpeed.x = -playerSpeed.x / 2
             playerPos.x = lastX
         end
     end
-    playerPos.y += 2
-
-    -- Feet Collision
-    slot = collisionCheck(1)
-    if slot then
-        if playerPos.y ~= lastY then
-            playerSpeed.y = -0.1
-            playerPos.y -= 1
-            playerPos.y = lastY
-            vars.ground = 1
-            airtime = 0
-        end
-    else
-        vars.ground = 0
-    end
-
-    -- Head Collision
-    slot = collisionCheck(2)
-    if slot then
-        if playerPos.y ~= lastY then
-            playerSpeed.y = 1
-            playerPos.y += 1
-            vars.ground = 0
-            playerPos.y = lastY
-        end
-    end
 end
+
 
 function movement()
     vars.ground = 0
@@ -53,13 +43,12 @@ function movement()
     end
 
     playerPos.x += playerSpeed.x
-    playerPos.y += playerSpeed.y
-
+    handleCollisions(true)
     clampSpeed(8)
 
     airtime += 1
-    
-    handleCollisions()
+    playerPos.y += playerSpeed.y
+    handleCollisions(false)
 
     if style == 0 and airtime < 8 and buttonJustPressed(playdate.kButtonA) then
         playerSpeed.y = -10
@@ -69,7 +58,6 @@ function movement()
     if vars.ground == 0 then
         playerSpeed.y += vars.fall
     end
-    print(playerSpeed.y)
 end
 
 function clampSpeed(maxSpeed)
