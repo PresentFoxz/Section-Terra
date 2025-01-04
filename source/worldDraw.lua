@@ -12,7 +12,7 @@ function drawWorld()
     for i=grab.y, grab.y + tilesY do
         for l=grab.x, grab.x + tilesX do
             local tile = tileCheck((grab.x + x), (grab.y + y))
-            if tile.block > 0 then
+            if type(tile) ~= "boolean" and tile.block > 0 then
                 local sprite = blockImages[tile.block]
                 local xPos = tile.x - camPos.x
                 local yPos = tile.y - camPos.y

@@ -7,34 +7,14 @@ import "player.lua"
 import "library.lua"
 import "mine.lua"
 import "worldDraw.lua"
+import "worldGen.lua"
 
 local gfx <const> = playdate.graphics
 local mineImage = gfx.image.new("images/mine")
 local playerImage = gfx.image.new("images/player")
 
-local function createBlockSprite(x, y)
-    rand = math.random(0,3)
-    resistRand = -0.2 + (0.2 - -0.2) * math.random()
-    table.insert(tiles, {block = rand, x = x, y = y, dex = 20, resist = resistRand})
-end
-
-local function makeWorld()
-    local drawX, drawY = 0, 0
-
-    local stepsRemaining = amt.x * amt.y
-    while stepsRemaining > 0 do
-        createBlockSprite(drawX, drawY)
-        drawX += blockSpacing
-        if drawX >= worldWidth then
-            drawX = 0
-            drawY += blockSpacing
-        end
-        stepsRemaining -= 1
-    end
-end
-
 local function initialize()
-    makeWorld()
+    WFC()
 end
 
 local function updateCamera()

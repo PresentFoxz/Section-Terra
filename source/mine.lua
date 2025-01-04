@@ -30,16 +30,16 @@ function mine(item)
         minePos.x, minePos.y = playerPos.x + (playerPos.w / 2), playerPos.y + (playerPos.h / 2)
     elseif style == 1 then
         if playdate.buttonIsPressed(playdate.kButtonRight) then
-            minePos.x += 2
+            minePos.x += 6
         end
         if playdate.buttonIsPressed(playdate.kButtonLeft) then
-            minePos.x -= 2
+            minePos.x -= 6
         end
         if playdate.buttonIsPressed(playdate.kButtonUp) then
-            minePos.y -= 2
+            minePos.y -= 6
         end
         if playdate.buttonIsPressed(playdate.kButtonDown) then
-            minePos.y += 2
+            minePos.y += 6
         end
 
         distBetween()
@@ -53,7 +53,8 @@ function mine(item)
         local validBlocks = {
             Block1 = true,
             Block2 = true,
-            Block3 = true
+            Block3 = true,
+            Block4 = true
         }
 
         if playdate.buttonIsPressed(playdate.kButtonA) then

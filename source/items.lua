@@ -7,11 +7,18 @@ objects = {
 }
 
 items = {
-    "Hand", "Pickaxe", "Axe", 
-    "Block1", "Block2", "Block3"
+    "Hand", "Pickaxe", "Axe",
+    "Block1", "Block2", "Block3", "Block4"
+}
+
+inventory = {
+    nil, nil,
+    nil, nil,
+    nil, nil,
+    nil, nil
 }
 
 blockImages = {
     gfx.image.new("images/blocks/block1"), gfx.image.new("images/blocks/block2"),
-    gfx.image.new("images/blocks/block3")
+    gfx.image.new("images/blocks/block3"), gfx.image.new("images/blocks/block4")
 }
