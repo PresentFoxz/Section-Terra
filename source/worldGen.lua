@@ -1,10 +1,16 @@
-local rules = {
-    air = {"air", "grass", "stone"},
-    grass = {"grass", "stone", "water", "air"},
-    stone = {"stone", "sand", "grass", "air"},
-    water = {"water", "grass"},
-    sand = {"sand", "stone", "grass", "air"}
+local biomeRules = {
+    grassland = {
+        air = {"air", "grass"},
+        grass = {"grass", "stone", "water", "air"},
+        stone = {"stone", "grass"},
+        water = {"grass", "air"}
+    },
+    cave = {
+        air = {"stone", "air"},
+        stone = {"stone", "air"},
+    }
 }
+
 
 local blockTypes = {
     air = 0,
@@ -21,14 +27,23 @@ local convertBlock = {
     "sand"
 }
 
+local blocks = {}
+
 function WFC()
     local i = 1
     local x, y, step = 0, 0, 0
     local lastBlockX, lastBlockY = 0, 0
+
+    if worldCoords.y >= 1 then
+        blocks = biomeRules.cave
+    elseif worldCoords.y < 1 then
+        blocks = biomeRules.grassland
+    end
+    print(blocks)
     while i < (amt.x * amt.y) do
         local test = tileCheck(lastBlockX, lastBlockY) 
         local prevBlock = test and convertBlock[test.block + 1] or "air"
-        local validPatterns = rules[prevBlock]
+        local validPatterns = blocks[prevBlock]
         if #validPatterns == 0 then
             validPatterns = {"air"}
         end

@@ -10,6 +10,7 @@ camPos = {x = 0, y = 0}
 vars = {accel = 1.5, frict = 1.2, fall = 1, fallMax = 20, ground = 0}
 style = 0
 minePos = {x = 0, y = 0, w = 10, h = 10}
+worldCoords = {x = 0, y = 0}
 
 lastX, lastY = playerPos.x, playerPos.y
 blockEquip = 1
