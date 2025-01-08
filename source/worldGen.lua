@@ -1,17 +1,3 @@
-local biomeRules = {
-    grassland = {
-        air = {"air", "grass"},
-        grass = {"grass", "stone", "water", "air"},
-        stone = {"stone", "grass"},
-        water = {"grass", "air"}
-    },
-    cave = {
-        air = {"stone", "air"},
-        stone = {"stone", "air"},
-    }
-}
-
-
 local blockTypes = {
     air = 0,
     grass = 1,
@@ -19,52 +5,52 @@ local blockTypes = {
     water = 3,
     sand = 4
 }
-local convertBlock = {
-    "air",
-    "grass",
-    "stone",
-    "water",
-    "sand"
-}
 
-local blocks = {}
+local noiseScale = 0.1
+local caveThreshold = 0.6
+local gfx <const> = playdate.graphics
+local chunkHeight = 50 
 
-function WFC()
-    local i = 1
-    local x, y, step = 0, 0, 0
-    local lastBlockX, lastBlockY = 0, 0
+local seed = math.random(1000, 9999)
+local function randomNoise(x, y)
+    return gfx.perlin(x * noiseScale + seed, y * noiseScale + seed)
+end
 
-    if worldCoords.y >= 1 then
-        blocks = biomeRules.cave
-    elseif worldCoords.y < 1 then
-        blocks = biomeRules.grassland
-    end
-    print(blocks)
-    while i < (amt.x * amt.y) do
-        local test = tileCheck(lastBlockX, lastBlockY) 
-        local prevBlock = test and convertBlock[test.block + 1] or "air"
-        local validPatterns = blocks[prevBlock]
-        if #validPatterns == 0 then
-            validPatterns = {"air"}
+function generateWorld()
+    for y = 1, amt.y do
+        for x = 1, amt.x do
+            local baseHeight = math.floor(randomNoise(x, y) * chunkHeight)
+            
+            local terrainNoise = gfx.perlin(x * noiseScale, y * noiseScale)
+            local blockType = "air"
+            
+            if y < baseHeight - 10 then
+                local caveNoise = gfx.perlin(x * noiseScale, y * noiseScale)
+                if caveNoise > caveThreshold then
+                    blockType = "air"
+                else
+                    blockType = "stone"
+                end
+            elseif y == baseHeight then
+                blockType = "grass"
+            elseif y > baseHeight then
+                if terrainNoise > 0.5 then
+                    blockType = "water"
+                else
+                    blockType = "air"
+                end
+            end
+
+            local resist = math.random() * 0.4 - 0.2
+            local dex = 20
+
+            table.insert(tiles, {
+                block = blockTypes[blockType],
+                x = (x - 1) * blockSpacing,
+                y = (y - 1) * blockSpacing,
+                resist = resist,
+                dex = dex
+            })
         end
-        
-        local rand = math.random(1, #validPatterns)
-        local chosenBlock = validPatterns[rand]
-        if blockTypes[chosenBlock] == nil then
-            chosenBlock = "air"
-        end
-        local resistRand = math.random() * 0.4 - 0.2
-
-        table.insert(tiles, {block = blockTypes[chosenBlock], x = x, y = y, dex = 20, resist = resistRand})
-        lastBlockX, lastBlockY = x, y
-        x += blockSpacing
-        step += 1
-        if step >= amt.x then
-            y += blockSpacing
-            x = 0
-            step = 0
-            lastBlockX, lastBlockY = 0, (y - blockSpacing)
-        end
-        i+=1
     end
 end

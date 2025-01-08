@@ -14,7 +14,8 @@ local mineImage = gfx.image.new("images/mine")
 local playerImage = gfx.image.new("images/player")
 
 local function initialize()
-    WFC()
+    playerPos.x = math.random(10, worldWidth - 10)
+    generateWorld()
 end
 
 local function updateCamera()
@@ -30,8 +31,6 @@ function buttonJustPressed(button)
     previousButtonStates[button] = isPressed
     return isPressed and not wasPressed
 end
-
-local rectX, rectY  = 30, 5
 
 function playdate.update()
     gfx.clear()
@@ -52,7 +51,7 @@ function playdate.update()
     drawPlayer_Mine(playerImage, mineImage)
 
     gfx.setColor(gfx.kColorWhite)
-    gfx.drawTextAligned(items[blockEquip], rectX, rectY, kTextAlignment.center)
+    gfx.drawTextAligned(items[blockEquip], 30, 5, kTextAlignment.center)
     playdate.drawFPS(200,5)
 end
 

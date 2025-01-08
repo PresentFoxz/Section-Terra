@@ -67,7 +67,7 @@ function collisionCheck(s)
         local tileY = playerPos.y + tilesToCheck[i + 1] + (playerPos.h / 2)
         local tile = tileCheck(tileX, tileY)
     
-        if tile and tile.block > 0 then
+        if tile and type(tile) ~= "boolean" and tile.block > 0 then
             local box_left = playerPos.x
             local box_right = playerPos.x + playerPos.w
             local box_top = playerPos.y
