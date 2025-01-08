@@ -1,76 +1,67 @@
 import "library.lua"
 import "items.lua"
 
-local function distBetween()
-    local mineMidX, mineMidY = minePos.x + (minePos.w / 2), minePos.y + (minePos.h / 2)
-    local px, py = (playerPos.x + (playerPos.w / 2)), (playerPos.y + (playerPos.h / 2))
-    local dx = px - mineMidX
-    local dy = py - mineMidY
-    local distance = math.sqrt(dx * dx + dy * dy)
+local function raycast()
+    local rayStep = 3
+    local rayLength = 40
+    local loopAmt = 0
+    minePos.x, minePos.y = playerPos.x + (playerPos.w / 2), playerPos.y + (playerPos.h / 2)
 
-    local maxDistance = 40
+    local crankAngle = playdate.getCrankPosition()
+    local radians = math.rad(crankAngle)
+    local dx = math.cos(radians)
+    local dy = -math.sin(radians)
+    
+    while true do
+        minePos.x += dx * rayStep
+        minePos.y += dy * rayStep
 
-    if distance > maxDistance then
-        if (px - mineMidX) > maxDistance then
-            minePos.x = px - maxDistance - 5
-        elseif (px - mineMidX) < -maxDistance then
-            minePos.x = px + maxDistance - 5
+        local touching = tileCheck(minePos.x, minePos.y)
+        if touching and touching.block > 0 then
+            print("touching")
+            return touching
         end
 
-        if (py - mineMidY) > maxDistance then
-            minePos.y = py - maxDistance - 5
-        elseif (py - mineMidY) < -maxDistance then
-            minePos.y = py + maxDistance - 5
+        local distance = math.sqrt((minePos.x - (playerPos.x + (playerPos.w / 2))) + (minePos.y - (playerPos.y + (playerPos.h / 2))))
+        if distance > rayLength or loopAmt > 13 then
+            break
         end
+        loopAmt += 1
     end
+
+    return tileCheck(minePos.x, minePos.y)
 end
 
+
 function mine(item)
-    if style == 0 then
-        minePos.x, minePos.y = playerPos.x + (playerPos.w / 2), playerPos.y + (playerPos.h / 2)
-    elseif style == 1 then
-        if playdate.buttonIsPressed(playdate.kButtonRight) then
-            minePos.x += 6
-        end
-        if playdate.buttonIsPressed(playdate.kButtonLeft) then
-            minePos.x -= 6
-        end
-        if playdate.buttonIsPressed(playdate.kButtonUp) then
-            minePos.y -= 6
-        end
-        if playdate.buttonIsPressed(playdate.kButtonDown) then
-            minePos.y += 6
-        end
-
-        distBetween()
-        closest = tileCheck(minePos.x, minePos.y)
+    closest = raycast()
         
-        local validItems = {
-            Hand = true,
-            Pickaxe = true,
-            Axe = true
-        }
-        local validBlocks = {
-            Block1 = true,
-            Block2 = true,
-            Block3 = true,
-            Block4 = true
-        }
+    local validItems = {
+        Hand = true,
+        Pickaxe = true,
+        Axe = true
+    }
+    local validBlocks = {
+        Block1 = true,
+        Block2 = true,
+        Block3 = true,
+        Block4 = true
+    }
+    local invalidStuff = {
+        Sword = false
+    }
 
-        if playdate.buttonIsPressed(playdate.kButtonA) then
-            print(validBlocks[item])
-            if not closest == false then
-                if closest.block > 0 and validItems[item] then
-                    if closest.dex > 0 then
-                        closest.dex -= objects[item].dex
-                    elseif closest.dex <= 0 then
-                        closest.block = 0
-                    end
-                elseif closest.block == 0 and validBlocks[item] then
-                    closest.block = blockReturn(item)
-                    closest.dex = 20
-                    print("Change Block: ", closest.block, closest.dex)
+    if playdate.buttonIsPressed(playdate.kButtonB) then
+        if not closest == false and not invalidStuff[item] then
+            if closest.block > 0 and validItems[item] then
+                if closest.dex > 0 then
+                    closest.dex -= objects[item].dex
+                elseif closest.dex <= 0 then
+                    closest.block = 0
                 end
+            elseif closest.block == 0 and validBlocks[item] then
+                closest.block = blockReturn(item)
+                closest.dex = 20
             end
         end
     end

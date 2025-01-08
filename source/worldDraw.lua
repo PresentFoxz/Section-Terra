@@ -29,8 +29,5 @@ end
 
 function drawPlayer_Mine(playerSprite, mineSprite)
     playerSprite:draw(playerPos.x - camPos.x, playerPos.y - camPos.y)
-
-    if style == 1 then
-        mineSprite:draw(minePos.x - camPos.x, minePos.y - camPos.y)
-    end
+    mineSprite:draw((minePos.x - (minePos.w / 2)) - camPos.x, (minePos.y - (minePos.h / 2)) - camPos.y)
 end

@@ -35,17 +35,12 @@ local rectX, rectY  = 30, 5
 
 function playdate.update()
     gfx.clear()
-    if buttonJustPressed(playdate.kButtonB) then
-        style = (style + 1) % 2
-    end
 
-    if style == 0 then
-        if buttonJustPressed(playdate.kButtonDown) then
-            blockEquip = math.min(#items, blockEquip + 1)
-        end
-        if buttonJustPressed(playdate.kButtonUp) then
-            blockEquip = math.max(1, blockEquip - 1)
-        end
+    if buttonJustPressed(playdate.kButtonDown) then
+        blockEquip = math.min(#items, blockEquip + 1)
+    end
+    if buttonJustPressed(playdate.kButtonUp) then
+        blockEquip = math.max(1, blockEquip - 1)
     end
 
     movement()

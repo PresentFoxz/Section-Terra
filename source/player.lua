@@ -33,13 +33,11 @@ end
 function movement()
     vars.ground = 0
     lastX, lastY = playerPos.x, playerPos.y
-    if style == 0 then
-        if playdate.buttonIsPressed(playdate.kButtonRight) then
-            playerSpeed.x += vars.accel
-        end
-        if playdate.buttonIsPressed(playdate.kButtonLeft) then
-            playerSpeed.x -= vars.accel
-        end
+    if playdate.buttonIsPressed(playdate.kButtonRight) then
+        playerSpeed.x += vars.accel
+    end
+    if playdate.buttonIsPressed(playdate.kButtonLeft) then
+        playerSpeed.x -= vars.accel
     end
 
     playerPos.x += playerSpeed.x
@@ -50,7 +48,7 @@ function movement()
     playerPos.y += playerSpeed.y
     handleCollisions(false)
 
-    if style == 0 and airtime < 8 and buttonJustPressed(playdate.kButtonA) then
+    if airtime < 8 and buttonJustPressed(playdate.kButtonA) then
         playerSpeed.y = -10
         airtime = 8
     end

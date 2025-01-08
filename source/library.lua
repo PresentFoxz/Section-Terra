@@ -8,7 +8,6 @@ playerPos = {x = 200, y = 20, w = 32, h = 32}
 playerSpeed = {x = 0, y = 0}
 camPos = {x = 0, y = 0}
 vars = {accel = 1.5, frict = 1.2, fall = 1, fallMax = 20, ground = 0}
-style = 0
 minePos = {x = 0, y = 0, w = 10, h = 10}
 worldCoords = {x = 0, y = 0}
 
