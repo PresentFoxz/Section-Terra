@@ -11,6 +11,14 @@ vars = {accel = 1.5, frict = 1.2, fall = 1, fallMax = 20, ground = 0}
 minePos = {x = 0, y = 0, w = 10, h = 10}
 worldCoords = {x = 0, y = 0}
 
+animations = {
+    idle = {start = 1, finish = 2}
+}
+
+pIndex = playdate.graphics.image.new("images/player")
+mineSprite = playdate.graphics.image.new("images/mine")
+currentAnimation = "idle"
+
 lastX, lastY = playerPos.x, playerPos.y
 blockEquip = 1
 

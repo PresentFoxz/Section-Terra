@@ -8,10 +8,9 @@ import "library.lua"
 import "mine.lua"
 import "worldDraw.lua"
 import "worldGen.lua"
+spriteSystem = import("spriteInit.lua")
 
 local gfx <const> = playdate.graphics
-local mineImage = gfx.image.new("images/mine")
-local playerImage = gfx.image.new("images/player")
 
 local function initialize()
     playerPos.x = math.random(10, worldWidth - 10)
@@ -48,7 +47,9 @@ function playdate.update()
     updateBlockData()
     playdate.timer.updateTimers()
     drawWorld()
-    drawPlayer_Mine(playerImage, mineImage)
+    checkAnimation(currentAnimation)
+    frame = animPlaying()
+    drawPlayer_Mine(frame)
 
     gfx.setColor(gfx.kColorWhite)
     gfx.drawTextAligned(items[blockEquip], 30, 5, kTextAlignment.center)
