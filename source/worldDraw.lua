@@ -5,11 +5,9 @@ local gfx <const> = playdate.graphics
 function drawWorld()
     local grab = tileCheck(camPos.x, camPos.y)
     
-    print(grab.x, grab.y, grab.block)
-    
     local x, y = 0, 0
-    local tilesX = screenWidth / blockSpacing
-    local tilesY = screenHeight / blockSpacing
+    local tilesX = (screenWidth / blockSpacing)
+    local tilesY = (screenHeight / blockSpacing)
     for i=grab.y, grab.y + tilesY do
         for l=grab.x, grab.x + tilesX do
             local tile = tileCheck((grab.x + x), (grab.y + y))
@@ -17,7 +15,7 @@ function drawWorld()
                 local sprite = blockImages[tile.block]
                 local xPos = tile.x - camPos.x
                 local yPos = tile.y - camPos.y
-                if (xPos < 400 and xPos > -blockSpacing) and (yPos > -blockSpacing and yPos < 240) then
+                if (xPos < 440 and xPos > -blockSpacing) and (yPos > -blockSpacing and yPos < 240) then
                     sprite:draw(xPos, yPos)
                 end
             end
@@ -29,7 +27,6 @@ function drawWorld()
 end
 
 function drawPlayer_Mine(frame)
-    
     local frameX = (frame - 1) * 32
     pIndex:draw(playerPos.x - camPos.x, playerPos.y - camPos.y, playdate.graphics.kImageUnflipped, frameX, 0, 32, 32)
     mineSprite:draw((minePos.x - (minePos.w / 2)) - camPos.x, (minePos.y - (minePos.h / 2)) - camPos.y)

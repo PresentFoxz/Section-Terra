@@ -1,10 +1,10 @@
 blockSpacing = 40
 tiles = {}
-amt = {x = 40, y = 50}
+amt = {x = 41, y = 51}
 screenWidth, screenHeight = 400, 240
 worldWidth, worldHeight = 1600, 2000
 
-playerPos = {x = 200, y = 20, w = 32, h = 32}
+playerPos = {x = 0, y = 20, w = 32, h = 32}
 playerSpeed = {x = 0, y = 0}
 camPos = {x = 0, y = 0}
 vars = {accel = 1.5, frict = 1.2, fall = 1, fallMax = 20, ground = 0}
@@ -74,7 +74,7 @@ function collisionCheck(s)
         local tileX = playerPos.x + tilesToCheck[i] + (playerPos.w / 2)
         local tileY = playerPos.y + tilesToCheck[i + 1] + (playerPos.h / 2)
         local tile = tileCheck(tileX, tileY)
-    
+        
         if tile and type(tile) ~= "boolean" and tile.block > 0 then
             local box_left = playerPos.x
             local box_right = playerPos.x + playerPos.w
@@ -127,9 +127,5 @@ function tileCheck(x, y)
     local index = (cellY * amt.x + cellX)
     
     local tile = tiles[(index + 1)]
-    if tile then
-        return tile
-    end
-    
-    return false
+    return tile
 end

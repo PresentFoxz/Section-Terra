@@ -14,7 +14,8 @@ local gfx <const> = playdate.graphics
 
 local function initialize()
     playerPos.x = math.random(10, worldWidth - 10)
-    generateWorld()
+    local image = createNoiseImage()
+    generateWorld(image)
 end
 
 local function updateCamera()
@@ -51,9 +52,18 @@ function playdate.update()
     frame = animPlaying()
     drawPlayer_Mine(frame)
 
+    local xString = "X:" .. tostring(math.floor((playerPos.x + (playerPos.w / 2)) / blockSpacing))
+    local yString = "Y:" .. tostring(math.floor((playerPos.y + (playerPos.h / 2)) / blockSpacing))
+
     gfx.setColor(gfx.kColorWhite)
+    local xTextWidth = gfx.getTextSize(xString)
+    local yTextWidth = gfx.getTextSize(yString)
+
     gfx.drawTextAligned(items[blockEquip], 30, 5, kTextAlignment.center)
-    playdate.drawFPS(200,5)
+    gfx.drawText(xString, 390 - xTextWidth, 5)
+    gfx.drawText(yString, 390 - yTextWidth, 20)
+    playdate.drawFPS(200, 5)
+
 end
 
 initialize()

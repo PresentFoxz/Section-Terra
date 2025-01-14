@@ -6,43 +6,39 @@ local blockTypes = {
     sand = 4
 }
 
-local noiseScale = 0.1
-local caveThreshold = 0.6
+
 local gfx <const> = playdate.graphics
-local chunkHeight = 50 
+local terrainFreq = 0.08
+local caveFreq = 0.03
+local hillFreq = 0.05
+local hillHeightMultiplier = 4
+local heightMultiplier = 8
+local heightAddition = math.random(10,30)
+local seed = math.random(-10000, 10000)
+local resist = 0
+local dex = 0
+local height = {}
 
-local seed = math.random(1000, 9999)
-local function randomNoise(x, y)
-    return gfx.perlin(x * noiseScale + seed, y * noiseScale + seed)
-end
+function generateWorld(image)
+    for y = 1, image.height do
+        for x = 1, image.width do
+            if y == 1 then
+                table.insert(height, gfx.perlin((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition)
+                local hillNoise = gfx.perlin((x + seed) * hillFreq, seed * hillFreq)
+                local hillAdjustment = hillNoise * hillHeightMultiplier
+                height[x] = math.min(math.floor(height[x] + hillAdjustment), image.height - 1)
 
-function generateWorld()
-    for y = 1, amt.y do
-        for x = 1, amt.x do
-            local baseHeight = math.floor(randomNoise(x, y) * chunkHeight)
-            
-            local terrainNoise = gfx.perlin(x * noiseScale, y * noiseScale)
-            local blockType = "air"
-            
-            if y < baseHeight - 10 then
-                local caveNoise = gfx.perlin(x * noiseScale, y * noiseScale)
-                if caveNoise > caveThreshold then
-                    blockType = "air"
-                else
-                    blockType = "stone"
-                end
-            elseif y == baseHeight then
-                blockType = "grass"
-            elseif y > baseHeight then
-                if terrainNoise > 0.5 then
-                    blockType = "water"
-                else
-                    blockType = "air"
-                end
+                print("Base Height:", height[x] - hillAdjustment, "Hill Added:", hillAdjustment, "Final Height:", height[x])
             end
-
-            local resist = math.random() * 0.4 - 0.2
-            local dex = 20
+            resist = 0
+            dex = 0
+            blockType = "air"
+            local pixelValue = image:sample(x, y)
+            if pixelValue == 1 and y >= height[x] then
+                resist = math.random() * 0.4 - 0.2
+                dex = 20
+                blockType = "grass"
+            end
 
             table.insert(tiles, {
                 block = blockTypes[blockType],
@@ -53,4 +49,24 @@ function generateWorld()
             })
         end
     end
+    print("HeightAddition:", heightAddition)
+end
+
+function createNoiseImage()
+    local image = gfx.image.new(amt.x, amt.y)
+    assert(image, "Failed to create image.")
+
+    gfx.pushContext(image)
+
+    for x = 1, image.width do
+        for y = 1, image.height do
+            local noiseValue = gfx.perlin((x + seed) * caveFreq, (y + seed) * caveFreq)
+            local color = noiseValue > 0.5 and gfx.kColorBlack or gfx.kColorWhite
+
+            gfx.setColor(color)
+            gfx.drawPixel(x, y)
+        end
+    end
+    gfx.popContext()
+    return image
 end
