@@ -29,6 +29,7 @@ function drawWorld()
 end
 
 function drawPlayer_Mine(frame)
+    
     local frameX = (frame - 1) * 32
     pIndex:draw(playerPos.x - camPos.x, playerPos.y - camPos.y, playdate.graphics.kImageUnflipped, frameX, 0, 32, 32)
     mineSprite:draw((minePos.x - (minePos.w / 2)) - camPos.x, (minePos.y - (minePos.h / 2)) - camPos.y)
