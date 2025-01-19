@@ -2,6 +2,20 @@ import "library.lua"
 import "items.lua"
 
 local mineLast = {x = 0, y = 0}
+local validItems = {
+    Hand = true,
+    Pickaxe = true,
+    Axe = true
+}
+local validBlocks = {
+    Block1 = {true, 1},
+    Block2 = {true, 2},
+    Block3 = {true, 3},
+    Block4 = {true, 4}
+}
+local invalidStuff = {
+    Sword = false
+}
 local function raycast(p)
     local rayStep = 3
     local rayLength = 80
@@ -44,19 +58,16 @@ end
 
 
 function mine(item)
-    local validItems = {
-        Hand = true,
-        Pickaxe = true,
-        Axe = true
-    }
-    local validBlocks = {
-        Block1 = true,
-        Block2 = true,
-        Block3 = true,
-        Block4 = true
-    }
-    local invalidStuff = {
-        Sword = false
+    local posChecks = {
+        tileCheck(playerPos.x, playerPos.y + (playerPos.h / 2)),
+        tileCheck(playerPos.x + playerPos.w, playerPos.y + (playerPos.h / 2)),
+        tileCheck(playerPos.x + (playerPos.w / 2), playerPos.y),
+        tileCheck(playerPos.x + (playerPos.w / 2), playerPos.y + playerPos.h),
+
+        tileCheck(playerPos.x, playerPos.y),
+        tileCheck(playerPos.x + playerPos.w, playerPos.y),
+        tileCheck(playerPos.x + playerPos.w, playerPos.y + playerPos.h),
+        tileCheck(playerPos.x, playerPos.y + playerPos.h)
     }
 
     if buttonJustPressed(playdate.kButtonB) and validBlocks[item] then
@@ -74,12 +85,13 @@ function mine(item)
                     closest.block = 0
                 end
             elseif closest.block == 0 and validBlocks[item] then
-                if tileCheck((playerPos.x + (playerPos.w / 2)), (playerPos.y + (playerPos.h / 2))) == closest then
-                    return
-                else
-                    closest.block = blockReturn(item)
-                    closest.dex = 20
+                for i=1, #posChecks do
+                    if posChecks[i] == closest then
+                        return
+                    end
                 end
+                closest.block = validBlocks[item][2]
+                closest.dex = 20
             end
         end
     end

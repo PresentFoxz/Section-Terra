@@ -1,9 +1,10 @@
 import "library.lua"
 
 local airtime = 0
+local fastfall = false
 
 function handleCollisions(slot)
-    local collisions = collisionCheck(slot)
+    local collisions = collisionCheck(slot, playerPos)
     
     if not slot then
         -- Handle Feet Collision
@@ -12,6 +13,7 @@ function handleCollisions(slot)
             playerPos.y = lastY
             vars.ground = 1
             airtime = 0
+            fastfall = true
         else
             vars.ground = 0
         end
@@ -39,6 +41,11 @@ function movement()
         end
         if playdate.buttonIsPressed(playdate.kButtonLeft) then
             playerSpeed.x -= vars.accel
+        end
+
+        if airtime > 12 and fastfall and playdate.buttonIsPressed(playdate.kButtonDown) then
+            playerSpeed.y = 5
+            fastfall = false
         end
 
         playerPos.x += playerSpeed.x

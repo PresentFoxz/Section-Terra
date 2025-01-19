@@ -1,4 +1,5 @@
 import "library.lua"
+import "worldLoaded.lua"
 import "CoreLibs/graphics"
 
 local gfx <const> = playdate.graphics
@@ -6,10 +7,10 @@ function drawWorld()
     local grab = tileCheck(camPos.x, camPos.y)
     
     local x, y = 0, 0
-    local tilesX = (screenWidth / blockSpacing)
-    local tilesY = (screenHeight / blockSpacing)
-    for i=grab.y, grab.y + tilesY do
-        for l=grab.x, grab.x + tilesX do
+    local tilesX = 11
+    local tilesY = 9
+    for i=1, tilesY do
+        for l=1, tilesX do
             local tile = tileCheck((grab.x + x), (grab.y + y))
             if tile and type(tile) ~= "boolean" and tile.block > 0 then
                 local sprite = blockImages[tile.block]
@@ -23,6 +24,7 @@ function drawWorld()
         end
         y += blockSpacing
         x = 0
+        print("Looped: ", i)
     end
 end
 

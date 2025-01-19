@@ -1,3 +1,6 @@
+import "worldLoaded.lua"
+import "library.lua"
+
 local blockTypes = {
     air = 0,
     grass = 1,
@@ -9,7 +12,7 @@ local blockTypes = {
 
 local gfx <const> = playdate.graphics
 local terrainFreq = 0.08
-local caveFreq = 0.03
+local caveFreq = 0.05
 local hillFreq = 0.05
 local hillHeightMultiplier = 4
 local heightMultiplier = 8
@@ -26,7 +29,7 @@ function generateWorld(image)
                 table.insert(height, gfx.perlin((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition)
                 local hillNoise = gfx.perlin((x + seed) * hillFreq, seed * hillFreq)
                 local hillAdjustment = hillNoise * hillHeightMultiplier
-                height[x] = math.min(math.floor(height[x] + hillAdjustment), image.height - 1)
+                height[x] = math.min(math.floor(height[x] - hillAdjustment), image.height - 1)
 
                 print("Base Height:", height[x] - hillAdjustment, "Hill Added:", hillAdjustment, "Final Height:", height[x])
             end
@@ -58,9 +61,15 @@ function createNoiseImage()
 
     gfx.pushContext(image)
 
+    local chunkOffsetX = worldCoords.x * amt.x
+    local chunkOffsetY = worldCoords.y * amt.y
+
     for x = 1, image.width do
         for y = 1, image.height do
-            local noiseValue = gfx.perlin((x + seed) * caveFreq, (y + seed) * caveFreq)
+            local worldX = chunkOffsetX + x
+            local worldY = chunkOffsetY + y
+
+            local noiseValue = gfx.perlin((worldX + seed) * caveFreq, (worldY + seed) * caveFreq)
             local color = noiseValue > 0.5 and gfx.kColorBlack or gfx.kColorWhite
 
             gfx.setColor(color)

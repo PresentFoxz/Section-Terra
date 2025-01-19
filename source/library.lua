@@ -1,8 +1,8 @@
 blockSpacing = 40
 tiles = {}
-amt = {x = 41, y = 51}
+amt = {x = 201, y = 231}
 screenWidth, screenHeight = 400, 240
-worldWidth, worldHeight = 1600, 2000
+worldWidth, worldHeight = (amt.x - 1) * blockSpacing, (amt.y - 1) * blockSpacing
 
 playerPos = {x = 0, y = 20, w = 32, h = 32}
 playerSpeed = {x = 0, y = 0}
@@ -28,17 +28,6 @@ end
 
 local previousButtonStates = {}
 
-function blockReturn(item)
-    if item == "Block1" then
-        return 1
-    elseif item == "Block2" then
-        return 2
-    elseif item == "Block3" then
-        return 3
-    end
-    return 0
-end
-
 function updateBlockData()
     for i=1, #tiles do
         local tile = tiles[i]
@@ -57,7 +46,7 @@ function buttonJustPressed(button)
     return isPressed and not wasPressed
 end
 
-function collisionCheck(s)
+function collisionCheck(s, pos)
     local collisions = {false, false, false}
     local tilesToCheck = {
         -blockSpacing, blockSpacing,
@@ -71,15 +60,15 @@ function collisionCheck(s)
         blockSpacing, -blockSpacing
     }
     for i = 1, #tilesToCheck, 2 do
-        local tileX = playerPos.x + tilesToCheck[i] + (playerPos.w / 2)
-        local tileY = playerPos.y + tilesToCheck[i + 1] + (playerPos.h / 2)
+        local tileX = pos.x + tilesToCheck[i] + (pos.w / 2)
+        local tileY = pos.y + tilesToCheck[i + 1] + (pos.h / 2)
         local tile = tileCheck(tileX, tileY)
         
         if tile and type(tile) ~= "boolean" and tile.block > 0 then
-            local box_left = playerPos.x
-            local box_right = playerPos.x + playerPos.w
-            local box_top = playerPos.y
-            local box_bottom = playerPos.y + playerPos.h
+            local box_left = pos.x
+            local box_right = pos.x + pos.w
+            local box_top = pos.y
+            local box_bottom = pos.y + pos.h
     
             local collider_left = tile.x
             local collider_right = tile.x + blockSpacing
