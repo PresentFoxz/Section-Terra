@@ -1,6 +1,7 @@
 blockSpacing = 40
 tiles = {}
-amt = {x = 201, y = 231}
+onScreen = {}
+amt = {x = 201, y = 251}
 screenWidth, screenHeight = 400, 240
 worldWidth, worldHeight = (amt.x - 1) * blockSpacing, (amt.y - 1) * blockSpacing
 
@@ -10,6 +11,7 @@ camPos = {x = 0, y = 0}
 vars = {accel = 1.5, frict = 1.2, fall = 1, fallMax = 20, ground = 0}
 minePos = {x = 0, y = 0, w = 10, h = 10}
 worldCoords = {x = 0, y = 0}
+crankAngle = 0
 
 animations = {
     idle = {start = 1, finish = 2}
@@ -27,18 +29,6 @@ function int(funct)
 end
 
 local previousButtonStates = {}
-
-function updateBlockData()
-    for i=1, #tiles do
-        local tile = tiles[i]
-        if tile.dex < 20 then
-            tile.dex += 0.2
-        elseif tile.dex > 20.01 then
-            tile.dex = 20
-        end
-    end
-end
-
 function buttonJustPressed(button)
     local isPressed = playdate.buttonIsPressed(button)
     local wasPressed = previousButtonStates[button] or false

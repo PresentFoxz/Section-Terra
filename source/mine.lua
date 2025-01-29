@@ -22,7 +22,7 @@ local function raycast(p)
     local loopAmt = 0
     minePos.x, minePos.y = playerPos.x + (playerPos.w / 2), playerPos.y + (playerPos.h / 2)
 
-    local crankAngle = playdate.getCrankPosition() - 90
+    crankAngle = playdate.getCrankPosition() - 90
     if crankAngle < 0 then
         crankAngle = crankAngle + 360
     end

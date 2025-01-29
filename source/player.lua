@@ -31,7 +31,7 @@ function handleCollisions(slot)
     end
 end
 
-local debug = 0
+local debug = 1
 function movement()
     vars.ground = 0
     lastX, lastY = playerPos.x, playerPos.y

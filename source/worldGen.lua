@@ -9,15 +9,16 @@ local blockTypes = {
     sand = 4
 }
 
-
 local gfx <const> = playdate.graphics
-local terrainFreq = 0.08
-local caveFreq = 0.05
-local hillFreq = 0.05
-local hillHeightMultiplier = 4
-local heightMultiplier = 8
-local heightAddition = math.random(10,30)
+local terrainFreq = 0.04
+local caveFreq = 0.045
+local hillFreq = 0.02
+local hillHeightMultiplier = 3
+local heightMultiplier = 6
+local heightAddition = math.random(15, 25)
 local seed = math.random(-10000, 10000)
+local minHeight = 10
+local maxHeight = amt.y
 local resist = 0
 local dex = 0
 local height = {}
@@ -26,17 +27,19 @@ function generateWorld(image)
     for y = 1, image.height do
         for x = 1, image.width do
             if y == 1 then
-                table.insert(height, gfx.perlin((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition)
-                local hillNoise = gfx.perlin((x + seed) * hillFreq, seed * hillFreq)
-                local hillAdjustment = hillNoise * hillHeightMultiplier
-                height[x] = math.min(math.floor(height[x] - hillAdjustment), image.height - 1)
-
-                print("Base Height:", height[x] - hillAdjustment, "Hill Added:", hillAdjustment, "Final Height:", height[x])
+                -- Generate base height
+                local baseHeight = gfx.perlin((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier
+                local hillNoise = gfx.perlin((x + seed) * hillFreq, seed * hillFreq) * hillHeightMultiplier
+                height[x] = math.floor(baseHeight - hillNoise + heightAddition)
+                height[x] = math.max(minHeight, math.min(maxHeight, height[x]))
+                print("Base Height:", baseHeight, "Hill Added:", hillNoise, "Final Height:", height[x])
             end
+
             resist = 0
             dex = 0
             blockType = "air"
             local pixelValue = image:sample(x, y)
+
             if pixelValue == 1 and y >= height[x] then
                 resist = math.random() * 0.4 - 0.2
                 dex = 20
@@ -52,7 +55,17 @@ function generateWorld(image)
             })
         end
     end
-    print("HeightAddition:", heightAddition)
+    print("Height Addition:", heightAddition)
+end
+
+local function generateHeights(image)
+    for x = 1, image.width do
+        local baseHeight = gfx.perlin((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier
+        local hillNoise = gfx.perlin((x + seed) * hillFreq, seed * hillFreq) * hillHeightMultiplier
+        local finalHeight = math.floor(baseHeight - hillNoise + heightAddition)
+
+        height[x] = math.max(minHeight, math.min(maxHeight, finalHeight))
+    end
 end
 
 function createNoiseImage()
@@ -60,6 +73,8 @@ function createNoiseImage()
     assert(image, "Failed to create image.")
 
     gfx.pushContext(image)
+
+    generateHeights(image)
 
     local chunkOffsetX = worldCoords.x * amt.x
     local chunkOffsetY = worldCoords.y * amt.y
@@ -70,12 +85,17 @@ function createNoiseImage()
             local worldY = chunkOffsetY + y
 
             local noiseValue = gfx.perlin((worldX + seed) * caveFreq, (worldY + seed) * caveFreq)
-            local color = noiseValue > 0.5 and gfx.kColorBlack or gfx.kColorWhite
 
-            gfx.setColor(color)
+            if height[x] and y > (height[x] - 4) and y < (height[x] + 8) and noiseValue > 0.7 then
+                gfx.setColor(gfx.kColorBlack)
+            else
+                gfx.setColor(gfx.kColorWhite)
+            end
+
             gfx.drawPixel(x, y)
         end
     end
+
     gfx.popContext()
     return image
 end
