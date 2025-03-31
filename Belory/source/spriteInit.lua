@@ -11,11 +11,16 @@ function checkAnimation(p, iD)
         CharactersUsed[p].animationFinish = anim.finish
         if CharactersUsed[p].currentFrame < CharactersUsed[p].animationStart or CharactersUsed[p].currentFrame > CharactersUsed[p].animationFinish then
             CharactersUsed[p].currentFrame = CharactersUsed[p].animationStart
+            CharactersUsed[p].extraFrameIdx = 1
         end
     else
         CharactersUsed[p].frameRate = 0
     end
     CharactersUsed[p].lastAnim = iD
+
+    if CharactersUsed[p].currentFrame == CharactersUsed[p].animationStart then
+        CharactersUsed[p].extraFrameIdx = 1
+    end
 end
 
 function animPlaying(p, iD)
@@ -26,11 +31,13 @@ function animPlaying(p, iD)
     end
     if CharactersUsed[p].frameRate >= animationSpeed then
         CharactersUsed[p].currentFrame += 1
+        CharactersUsed[p].extraFrameIdx += 1
         if CharactersUsed[p].currentFrame > CharactersUsed[p].animationFinish then
             CharactersUsed[p].currentFrame = CharactersUsed[p].animationStart
             if CharactersUsed[p].state > stateNormReset then
                 CharactersUsed[p].state = 1
                 CharactersUsed[p].currentFrame = 1
+                CharactersUsed[p].extraFrameIdx = 1
             end
         end
         CharactersUsed[p].frameRate = 0

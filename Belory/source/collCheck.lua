@@ -6,13 +6,13 @@ function handleCollisions(p, o)
     local collision = false
     local Char = CharactersUsed[o].Char
     local state = CharactersUsed[o].state
-    local frame = math.ceil((CharactersUsed[o].currentFrame - animations[Char][state].start) + 1)
-    if state > stateNormReset and frame >= animations[Char][state].hitStart and frame <= animations[Char][state].hitEnd then
+    local frame = CharactersUsed[o].extraFrameIdx
+    if state > stateNormReset and hitboxes[Char][state - stateNormReset][frame] ~= null then
         collision = collisionCheck(p, o)
         print(p)
     end
 
-    if collision and hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][8] == 1 then
+    if collision and hitboxes[Char][state - stateNormReset][frame][8] == 1 then
         CharactersUsed[p].lay = 0
     end
 
@@ -23,34 +23,34 @@ function handleCollisions(p, o)
             CharactersUsed[p].flip = 1
         end
         if CharactersUsed[o].dashing > 3 then
-            CharactersUsed[p].stun = hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][5] + 5
+            CharactersUsed[p].stun = hitboxes[Char][state - stateNormReset][frame][5] + 5
         else
-            CharactersUsed[p].stun = hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][5]
+            CharactersUsed[p].stun = hitboxes[Char][state - stateNormReset][frame][5]
         end
         if CharactersUsed[p].flip == 1 then
-            CharactersUsed[p].xSpeed += hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][6]
+            CharactersUsed[p].xSpeed += hitboxes[Char][state - stateNormReset][frame][6]
         else
-            CharactersUsed[p].xSpeed += -hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][6]
+            CharactersUsed[p].xSpeed += -hitboxes[Char][state - stateNormReset][frame][6]
         end
 
         if CharactersUsed[p].ground == 0 then
-            CharactersUsed[p].ySpeed = -hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][12]
+            CharactersUsed[p].ySpeed = -hitboxes[Char][state - stateNormReset][frame][12]
         end
-        if hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][10] == 1 and CharactersUsed[p].launchCount > 0 then
-            CharactersUsed[p].ySpeed = -hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][12]
+        if hitboxes[Char][state - stateNormReset][frame][10] == 1 and CharactersUsed[p].launchCount > 0 then
+            CharactersUsed[p].ySpeed = -hitboxes[Char][state - stateNormReset][frame][12]
             CharactersUsed[p].launchCount -= 1
-        elseif CharactersUsed[p].launchCount == 0 and hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][10] == 1 then
+        elseif CharactersUsed[p].launchCount == 0 and hitboxes[Char][state - stateNormReset][frame][10] == 1 then
             CharactersUsed[p].stun = 3
         end
         if CharactersUsed[p].stagger == 0 then
             CharactersUsed[p].staggerTime = 0
         end
-        if CharactersUsed[p].stagger >= 1 and hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][11] == 1 then
+        if CharactersUsed[p].stagger >= 1 and hitboxes[Char][state - stateNormReset][frame][11] == 1 then
             CharactersUsed[p].stagger -= 1
             CharactersUsed[p].staggerTime = 20
         end
 
-        CharactersUsed[p].lay = hitboxes[Char][state - stateNormReset][CharactersUsed[o].hitbox][13]
+        CharactersUsed[p].lay = hitboxes[Char][state - stateNormReset][frame][13]
 
         resetState(p)
         CharactersUsed[p].hittable = 0

@@ -122,7 +122,6 @@ function playdate.update()
             drawSprites(frame, CharactersUsed[i].Char, i)
             --renderBox(i, CharactersUsed[i].state)
 
-            gfx.drawText("State: " .. CharactersUsed[i].state, CharactersUsed[i].x, CharactersUsed[i].y - 15)
             local debug = 0
             if debug == 1 then
                 gfx.drawText("State: " .. CharactersUsed[i].state, CharactersUsed[i].x, CharactersUsed[i].y - 15)

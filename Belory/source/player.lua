@@ -103,7 +103,7 @@ function movement(p, o, count)
             CharactersUsed[p].state = 5
         end
 
-        if  (PBS[p][3] == 1 or PBS[p][4] == 1) and PBSTXT ~= lastPBSTXT then
+        if (PBS[p][3] == 1 or PBS[p][4] == 1) and (PBS[p][3] ~= lastPBS[p][3] or PBS[p][4] ~= lastPBS[p][4]) then
             CharactersUsed[p].dashDir += 1
         end
 

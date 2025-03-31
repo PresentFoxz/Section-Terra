@@ -17,14 +17,10 @@ function renderBox(p, state)
     local bw = hurtBoxes[CharactersUsed[p].Char][state][3]
     local bh = hurtBoxes[CharactersUsed[p].Char][state][4]
     gfx.drawRect(bx, by, bw, bh)
-    if state <= stateNormReset then
-        CharactersUsed[p].hitbox = 1
-        CharactersUsed[p].hitboxAdd = 0
-        return
-    end
-    local frame = math.ceil((CharactersUsed[p].currentFrame - animations[CharactersUsed[p].Char][state].start) + 1)
-    if frame >= animations[CharactersUsed[p].Char][state].hitStart and frame <= animations[CharactersUsed[p].Char][state].hitEnd then
-        local hitbox = hitboxes[CharactersUsed[p].Char][state - stateNormReset][CharactersUsed[p].hitbox]
+    local frame = CharactersUsed[p].extraFrameIdx
+    print()
+    if hitboxes[CharactersUsed[p].Char][state - stateNormReset][frame] ~= null then
+        local hitbox = hitboxes[CharactersUsed[p].Char][state - stateNormReset][frame]
         local x = hitbox[1] + CharactersUsed[p].x
         local y = hitbox[2] + CharactersUsed[p].y
         local w = hitbox[3]
@@ -37,12 +33,6 @@ function renderBox(p, state)
         end
         gfx.drawRect(x, y, w, h)
         gfx.drawPixel(x + (w / 2), y + (h / 2))
-        
-        CharactersUsed[p].hitboxAdd += animations[CharactersUsed[p].Char][state].frameAdd
-        if CharactersUsed[p].hitboxAdd > 2 then
-            CharactersUsed[p].hitbox += 1
-            CharactersUsed[p].hitboxAdd = 0
-        end
     end
 end
 

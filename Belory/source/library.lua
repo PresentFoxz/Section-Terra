@@ -53,7 +53,8 @@ function collisionCheck(p, o)
     local state1 = CharactersUsed[p].state
     local state2 = CharactersUsed[o].state
     local hurtbox = hurtBoxes[CharactersUsed[p].Char][state1]
-    local hitbox = hitboxes[CharactersUsed[o].Char][state2 - stateNormReset][CharactersUsed[o].hitbox]
+    local frame = CharactersUsed[o].extraFrameIdx
+    local hitbox = hitboxes[CharactersUsed[o].Char][state2 - stateNormReset][frame]
     local px = hurtbox[1] + CharactersUsed[p].x
     local py = hurtbox[2] + CharactersUsed[p].y
     local pw = hurtbox[3]
@@ -125,7 +126,7 @@ end
 
 function resetState(p)
     CharactersUsed[p].state = 1
-    CharactersUsed[p].hitbox = 1
+    CharactersUsed[p].extraFrameIdx = 1
     CharactersUsed[p].currentFrame = 1
     CharactersUsed[p].lastAnim = 0
     CharactersUsed[p].frameRate = 0

@@ -7,8 +7,7 @@ end
 
 function stateMachine(p, o)
     CharactersUsed[o].hittable = 1
-    local frame = math.ceil((CharactersUsed[p].currentFrame - animations[CharactersUsed[p].Char][CharactersUsed[p].state].start) + 1)
-
+    
     if CharactersUsed[p].Char == 1 then
         if CharactersUsed[p].dashDir == 2 and (CharactersUsed[p].state <= stateNormReset and CharactersUsed[p].ground == 1) then
             CharactersUsed[p].state = 2
@@ -40,5 +39,6 @@ function stateMachine(p, o)
             -- a.5B
             CharactersUsed[p].state = 10
         end
+        CharactersUsed[p].extraFrameIdx = 1
     end
 end
